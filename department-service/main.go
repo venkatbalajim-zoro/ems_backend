@@ -3,12 +3,16 @@ package main
 import (
 	"department-service/configs"
 	"department-service/routes"
+	_ "embed"
 
 	"github.com/gin-gonic/gin"
 )
 
+//go:embed .env
+var envData []byte
+
 func main() {
-	configs.LoadEnv()
+	configs.LoadEnv(string(envData))
 
 	configs.ConnectDB()
 

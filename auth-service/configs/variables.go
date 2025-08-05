@@ -8,8 +8,11 @@ import (
 )
 
 // function to check if .env can be accessible
-func LoadEnv() {
-	err := godotenv.Load()
+func LoadEnv(data string) {
+	envMap, err := godotenv.Unmarshal(data)
+	for key, value := range envMap {
+		os.Setenv(key, value)
+	}
 	if err != nil {
 		log.Fatalf("Unable to load the environmental variables: %s\n", err)
 	} else {
