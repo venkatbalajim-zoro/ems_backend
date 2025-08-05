@@ -5,11 +5,15 @@ go 1.24.5
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/joho/godotenv v1.5.1
+	google.golang.org/grpc v1.74.2
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.30.0
+	shared v0.0.0
 )
 
-require github.com/google/go-cmp v0.7.0 // indirect
+replace shared => ../shared
+
+require google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect

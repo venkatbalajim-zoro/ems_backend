@@ -9,7 +9,7 @@ import (
 
 // function to check if .env can be accessible
 func LoadEnv() {
-	err := godotenv.Load()
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatalf("Unable to load the environmental variables: %s\n", err)
 	} else {

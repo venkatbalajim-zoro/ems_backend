@@ -2,6 +2,7 @@ package routes
 
 import (
 	"department-service/handlers"
+	"department-service/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,9 +10,9 @@ import (
 func SetupRoutes(router *gin.Engine) {
 	routes := router.Group("/departments")
 	{
-		routes.GET("/read", handlers.Read)
-		routes.POST("/add", handlers.Add)
-		routes.PUT("/update", handlers.Update)
-		routes.DELETE("/delete", handlers.Delete)
+		routes.GET("/read", middleware.Verify(), handlers.Read)
+		routes.POST("/add", middleware.Verify(), handlers.Add)
+		routes.PUT("/update", middleware.Verify(), handlers.Update)
+		routes.DELETE("/delete", middleware.Verify(), handlers.Delete)
 	}
 }
