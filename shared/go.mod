@@ -1,4 +1,4 @@
-module shared
+module github.com/venkatbalajim-zoro/ems_backend/shared
 
 go 1.24.5
 
