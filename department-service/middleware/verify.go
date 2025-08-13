@@ -11,14 +11,17 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "shared/protos"
+	"department-service/configs"
+	pb "department-service/protos"
 )
 
 func Verify() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		text := c.GetHeader("Authorization")
 
-		connection, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+		grpcAddress := configs.GetEnv("GRPC_ADDRESS", "localhost:50051")
+
+		connection, err := grpc.NewClient(grpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Printf("Error in connecting gRPC: %s\n", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{

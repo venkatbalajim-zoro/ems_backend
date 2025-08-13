@@ -8,7 +8,7 @@ import (
 	"log"
 	"net"
 
-	pb "shared/protos"
+	pb "auth-service/protos"
 
 	"github.com/gin-gonic/gin"
 	rpc "google.golang.org/grpc"

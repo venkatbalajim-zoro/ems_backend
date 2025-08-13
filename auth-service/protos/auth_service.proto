@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package auth_service;
+
+option go_package = "github.com/venkatbalajim-zoro/ems_backend/auth-service/protos;";
+
+message VerifyTokenRequest {
+    string text = 1;
+}
+message VerifyTokenResponse {
+    bool response = 1;
+}
+
+service AuthService {
+    rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+}

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"auth-service/middleware"
-	pb "shared/protos"
+	pb "auth-service/protos"
 )
 
 type AuthServer struct {
