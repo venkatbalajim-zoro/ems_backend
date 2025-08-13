@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"errors"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -15,27 +14,24 @@ import (
 )
 
 func UploadCSV(context *gin.Context) {
-	var input map[string]string
-	if err := context.ShouldBindJSON(&input); err != nil {
+	file, err := context.FormFile("file")
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the file path",
+			"error": "CSV file is required",
 		})
 		return
 	}
 
-	path := input["path"]
-
-	file, err := os.Open(path)
+	src, err := file.Open()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to read the CSV file",
+			"error": "Unable to open the uploaded file",
 		})
 		return
 	}
-	defer file.Close()
+	defer src.Close()
 
-	reader := csv.NewReader(file)
-
+	reader := csv.NewReader(src)
 	records, err := reader.ReadAll()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
@@ -46,32 +42,32 @@ func UploadCSV(context *gin.Context) {
 
 	if len(records) == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"message": "Emply CSV file",
+			"message": "Empty CSV file",
 		})
 		return
 	}
 
 	var data []models.Department
 	for _, record := range records {
-		if len(record) < 2 || len(record) > 2 {
+		if len(record) != 2 {
 			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Required two data - id and name",
+				"error": "Each row must have exactly 2 values: id and name",
 			})
 			return
 		}
+
 		id, err := strconv.Atoi(record[0])
-		name := record[1]
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid data in the CSV file",
+				"error": "Invalid ID in CSV",
 			})
 			return
 		}
-		elt := models.Department{
+
+		data = append(data, models.Department{
 			ID:   id,
-			Name: name,
-		}
-		data = append(data, elt)
+			Name: record[1],
+		})
 	}
 
 	err = configs.Database.Table("departments").Clauses(clause.OnConflict{
@@ -85,7 +81,7 @@ func UploadCSV(context *gin.Context) {
 			switch sqlError.Number {
 			case 1062:
 				context.JSON(http.StatusConflict, gin.H{
-					"error": "Unable to add data as duplicate data exists",
+					"error": "Duplicate data exists",
 				})
 				return
 			default:
@@ -98,6 +94,6 @@ func UploadCSV(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Data is uploaded successfully",
+		"message": "Data uploaded successfully",
 	})
 }

@@ -5,7 +5,6 @@ import (
 	"employee-service/models"
 	"encoding/csv"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -13,43 +12,54 @@ import (
 )
 
 func DownloadCSV(context *gin.Context) {
-	var input map[string]string
-	if err := context.ShouldBindJSON(&input); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the file path",
-		})
-		return
-	}
-	path := input["path"]
-
-	file, err := os.Create(path)
-	if err != nil {
+	// Fetch employees from database
+	var records []models.Employee
+	result := configs.Database.Table("employees").Find(&records)
+	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to create a new file",
+			"error": "Unable to fetch employee data",
 		})
 		return
 	}
-	defer file.Close()
 
-	writer := csv.NewWriter(file)
+	// Set headers for file download
+	context.Header("Content-Description", "File Transfer")
+	context.Header("Content-Disposition", `attachment; filename="employees.csv"`)
+	context.Header("Content-Type", "text/csv")
+
+	// Create CSV writer for HTTP response
+	writer := csv.NewWriter(context.Writer)
 	defer writer.Flush()
 
-	var records []models.Employee
-	configs.Database.Table("employees").Find(&records)
-
-	writer.Write([]string{
+	// Write header row
+	if err := writer.Write([]string{
 		"Employee ID", "First Name", "Last Name", "Email ID", "Phone",
 		"Gender", "Department ID", "Designation", "Salary", "Hire Date",
-	})
-	for _, record := range records {
-		writer.Write([]string{
-			strconv.Itoa(record.EmployeeID), record.FirstName, record.LastName,
-			record.Email, record.Phone, record.Gender, strconv.Itoa(record.DepartmentID),
-			strconv.FormatFloat(record.Salary, 'e', 2, 64), record.HireDate.Format(time.DateOnly),
+	}); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Unable to write CSV header",
 		})
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"message": "Data is downloaded successfully",
-	})
+	// Write data rows
+	for _, record := range records {
+		if err := writer.Write([]string{
+			strconv.Itoa(record.EmployeeID),
+			record.FirstName,
+			record.LastName,
+			record.Email,
+			record.Phone,
+			record.Gender,
+			strconv.Itoa(record.DepartmentID),
+			record.Designation,
+			strconv.FormatFloat(record.Salary, 'f', 2, 64), // normal decimal format
+			record.HireDate.Format(time.DateOnly),
+		}); err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Unable to write CSV data",
+			})
+			return
+		}
+	}
 }

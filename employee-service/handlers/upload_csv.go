@@ -5,7 +5,6 @@ import (
 	"employee-service/models"
 	"encoding/csv"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -14,30 +13,31 @@ import (
 )
 
 func UploadCSV(context *gin.Context) {
-	var input map[string]string
-	if err := context.ShouldBindJSON(&input); err != nil {
+	// Get uploaded file
+	file, err := context.FormFile("file")
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the file path",
+			"error": "CSV file is required",
 		})
 		return
 	}
-	path := input["path"]
 
-	file, err := os.Open(path)
+	// Open uploaded file
+	src, err := file.Open()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to read the file",
+			"error": "Unable to open uploaded file",
 		})
 		return
 	}
-	defer file.Close()
+	defer src.Close()
 
-	reader := csv.NewReader(file)
-
+	// Read CSV content
+	reader := csv.NewReader(src)
 	records, err := reader.ReadAll()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to read the content",
+			"error": "Unable to read CSV content",
 		})
 		return
 	}
@@ -51,54 +51,52 @@ func UploadCSV(context *gin.Context) {
 
 	var data []models.Employee
 	for _, record := range records {
+		if len(record) != 10 {
+			context.JSON(http.StatusBadRequest, gin.H{
+				"error": "Each row must have exactly 10 fields",
+			})
+			return
+		}
+
 		id, err := strconv.Atoi(record[0])
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid data in the CSV file",
-			})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Employee ID"})
 			return
 		}
-		firstName, lastName, email, phone, gender := record[1], record[2], record[3], record[4], record[5]
+
 		deptId, err := strconv.Atoi(record[6])
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid data in the CSV file",
-			})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Department ID"})
 			return
 		}
-		designation := record[7]
+
 		salary, err := strconv.ParseFloat(record[8], 64)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid data in the CSV file",
-			})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Salary"})
 			return
 		}
 
 		hireDate, err := time.Parse(time.DateOnly, record[9])
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid data in the CSV file",
-			})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Hire Date format"})
 			return
 		}
 
-		elt := models.Employee{
+		data = append(data, models.Employee{
 			EmployeeID:   id,
-			FirstName:    firstName,
-			LastName:     lastName,
-			Email:        email,
-			Phone:        phone,
-			Gender:       gender,
+			FirstName:    record[1],
+			LastName:     record[2],
+			Email:        record[3],
+			Phone:        record[4],
+			Gender:       record[5],
 			DepartmentID: deptId,
-			Designation:  designation,
+			Designation:  record[7],
 			Salary:       salary,
 			HireDate:     hireDate,
-		}
-
-		data = append(data, elt)
+		})
 	}
 
+	// Insert or update (UPSERT)
 	err = configs.Database.Table("employees").Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "employee_id"}},
 		DoUpdates: clause.AssignmentColumns([]string{
@@ -115,6 +113,6 @@ func UploadCSV(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Data is uploaded successfully",
+		"message": "Data uploaded successfully",
 	})
 }
