@@ -17,7 +17,7 @@ func ConnectDB() {
 	port := GetEnv("DB_PORT", "3306")
 	name := GetEnv("DB_NAME", "sample")
 
-	link := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, pass, host, port, name)
+	link := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=true", user, pass, host, port, name)
 
 	db, err := gorm.Open(mysql.Open(link), &gorm.Config{})
 	if err != nil {
