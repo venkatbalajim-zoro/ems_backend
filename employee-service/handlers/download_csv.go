@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,8 +52,8 @@ func DownloadCSV(context *gin.Context) {
 			record.Gender,
 			strconv.Itoa(record.DepartmentID),
 			record.Designation,
-			strconv.FormatFloat(record.Salary, 'f', 2, 64), // normal decimal format
-			record.HireDate.Format(time.DateOnly),
+			strconv.FormatFloat(record.Salary, 'f', 2, 64),
+			record.HireDate,
 		}); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Unable to write CSV data",

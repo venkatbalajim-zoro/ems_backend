@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/clause"
@@ -76,12 +75,6 @@ func UploadCSV(context *gin.Context) {
 			return
 		}
 
-		hireDate, err := time.Parse(time.DateOnly, record[9])
-		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Hire Date format"})
-			return
-		}
-
 		data = append(data, models.Employee{
 			EmployeeID:   id,
 			FirstName:    record[1],
@@ -92,7 +85,7 @@ func UploadCSV(context *gin.Context) {
 			DepartmentID: deptId,
 			Designation:  record[7],
 			Salary:       salary,
-			HireDate:     hireDate,
+			HireDate:     record[9],
 		})
 	}
 

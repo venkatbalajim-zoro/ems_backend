@@ -10,34 +10,11 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-func isValidData(e models.Employee) bool {
-	if e.EmployeeID == 0 ||
-		e.FirstName == "" ||
-		e.LastName == "" ||
-		e.Email == "" ||
-		e.Phone == "" ||
-		e.Gender == "" ||
-		e.DepartmentID == 0 ||
-		e.Designation == "" ||
-		e.Salary == 0.0 ||
-		e.HireDate.IsZero() {
-		return false
-	}
-	return true
-}
-
 func Add(context *gin.Context) {
 	var data models.Employee
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "Unable to fetch the input data",
-		})
-		return
-	}
-
-	if !isValidData(data) {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Missing required fields",
 		})
 		return
 	}
@@ -56,6 +33,17 @@ func Add(context *gin.Context) {
 				context.JSON(http.StatusBadRequest, gin.H{
 					"error": "Already an employee exists with same ID",
 				})
+				return
+			case 1048:
+				context.JSON(http.StatusConflict, gin.H{
+					"error": "Data must not be null",
+				})
+				return
+			case 3819:
+				context.JSON(http.StatusConflict, gin.H{
+					"error": "Data is violating the check constraints in the database",
+				})
+				return
 			default:
 				context.JSON(http.StatusInternalServerError, gin.H{
 					"error": "Internal server error while inserting employee details.",
