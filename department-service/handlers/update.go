@@ -12,7 +12,7 @@ func Update(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
@@ -20,7 +20,7 @@ func Update(context *gin.Context) {
 	value, ok := data["id"]
 	if !ok {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Department ID is required to update the details",
+			"error": "Department ID is required to update the details.",
 		})
 		return
 	}
@@ -30,17 +30,17 @@ func Update(context *gin.Context) {
 	result := configs.Database.Table("departments").Where("id = ?", value).Updates(data)
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unexpected error occured",
+			"error": "Internal server error occured.",
 		})
 		return
 	} else if result.RowsAffected == 0 {
 		context.JSON(http.StatusNotFound, gin.H{
-			"error": "No department found with this ID",
+			"error": "No department found with this ID.",
 		})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Department details are updated successfully ...",
+		"message": "Department details are updated successfully.",
 	})
 }

@@ -15,7 +15,7 @@ func DownloadCSV(context *gin.Context) {
 	result := configs.Database.Table("departments").Find(&data)
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to fetch data from database",
+			"error": "Unable to fetch data from database.",
 		})
 		return
 	}
@@ -29,7 +29,7 @@ func DownloadCSV(context *gin.Context) {
 
 	if err := writer.Write([]string{"ID", "Name"}); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to write CSV header",
+			"error": "Unable to write CSV header.",
 		})
 		return
 	}
@@ -37,7 +37,7 @@ func DownloadCSV(context *gin.Context) {
 	for _, record := range data {
 		if err := writer.Write([]string{strconv.Itoa(record.ID), record.Name}); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to write CSV data",
+				"error": "Unable to write CSV data.",
 			})
 			return
 		}

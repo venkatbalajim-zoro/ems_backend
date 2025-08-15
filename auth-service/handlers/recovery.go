@@ -13,7 +13,7 @@ func Recovery(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
@@ -28,7 +28,7 @@ func Recovery(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message":  "Password fetched successfully",
+		"message":  "Password fetched successfully.",
 		"password": account.Password,
 	})
 }

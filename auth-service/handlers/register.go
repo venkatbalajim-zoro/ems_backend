@@ -14,14 +14,14 @@ func Register(context *gin.Context) {
 	var input models.Account
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
 
 	if input.Username == "" || input.Password == "" || input.EmployeeID == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Please provide all the details",
+			"error": "Please provide all the details.",
 		})
 		return
 	}
@@ -33,7 +33,7 @@ func Register(context *gin.Context) {
 			switch mysqlErr.Number {
 			case 1062:
 				context.JSON(http.StatusConflict, gin.H{
-					"error": "Username already exists",
+					"error": "Username already exists.",
 				})
 				return
 			case 1452:
@@ -43,7 +43,7 @@ func Register(context *gin.Context) {
 				return
 			default:
 				context.JSON(http.StatusInternalServerError, gin.H{
-					"error": "Unable to register the account details",
+					"error": "Unable to register the account details.",
 				})
 			}
 			return
@@ -51,6 +51,6 @@ func Register(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Account registered successfully",
+		"message": "Account registered successfully.",
 	})
 }

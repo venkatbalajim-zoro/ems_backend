@@ -14,13 +14,13 @@ func Read(context *gin.Context) {
 	err := configs.Database.Table("employees").Find(&rows).Error
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal server error occured",
+			"error": "Internal server error occured.",
 		})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "All employees details are fetched successfully ...",
+		"message": "All employees details are fetched successfully.",
 		"data":    rows,
 	})
 }

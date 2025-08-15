@@ -18,14 +18,14 @@ func Add(context *gin.Context) {
 	var data models.Department
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
 
 	if !isValidData(data) {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Missing required fields",
+			"error": "Some required data are missing.",
 		})
 		return
 	}
@@ -37,12 +37,12 @@ func Add(context *gin.Context) {
 			switch sqlError.Number {
 			case 1062:
 				context.JSON(http.StatusBadRequest, gin.H{
-					"error": "Already a department exists with same ID",
+					"error": "Already a department exists with same ID.",
 				})
 				return
 			default:
 				context.JSON(http.StatusInternalServerError, gin.H{
-					"error": "Internal server error occured",
+					"error": "Internal server error occured.",
 				})
 				return
 			}

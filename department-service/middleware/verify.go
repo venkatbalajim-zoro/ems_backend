@@ -25,7 +25,7 @@ func Verify() gin.HandlerFunc {
 		if err != nil {
 			log.Printf("Error in connecting gRPC: %s\n", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to connect with the gRPC server",
+				"error": "Unable to connect with the gRPC server.",
 			})
 			return
 		}
@@ -41,12 +41,12 @@ func Verify() gin.HandlerFunc {
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to verify the token",
+				"error": "Unable to verify the token.",
 			})
 			return
 		} else if !response.Response {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "You are unauthorized and unable to proceed with the request",
+				"error": "You are unauthorized and unable to proceed with the request.",
 			})
 			return
 		}

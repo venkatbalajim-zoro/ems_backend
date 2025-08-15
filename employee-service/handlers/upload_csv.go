@@ -16,7 +16,7 @@ func UploadCSV(context *gin.Context) {
 	file, err := context.FormFile("file")
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "CSV file is required",
+			"error": "CSV file is required.",
 		})
 		return
 	}
@@ -25,7 +25,7 @@ func UploadCSV(context *gin.Context) {
 	src, err := file.Open()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to open uploaded file",
+			"error": "Unable to open uploaded file.",
 		})
 		return
 	}
@@ -36,14 +36,14 @@ func UploadCSV(context *gin.Context) {
 	records, err := reader.ReadAll()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to read CSV content",
+			"error": "Unable to read CSV content.",
 		})
 		return
 	}
 
 	if len(records) == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"message": "Empty CSV file",
+			"message": "Empty CSV file.",
 		})
 		return
 	}
@@ -52,26 +52,26 @@ func UploadCSV(context *gin.Context) {
 	for _, record := range records {
 		if len(record) != 10 {
 			context.JSON(http.StatusBadRequest, gin.H{
-				"error": "Each row must have exactly 10 fields",
+				"error": "Each row must have exactly 10 fields.",
 			})
 			return
 		}
 
 		id, err := strconv.Atoi(record[0])
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Employee ID"})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Employee ID."})
 			return
 		}
 
 		deptId, err := strconv.Atoi(record[6])
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Department ID"})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Department ID."})
 			return
 		}
 
 		salary, err := strconv.ParseFloat(record[8], 64)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Salary"})
+			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Salary."})
 			return
 		}
 
@@ -100,12 +100,12 @@ func UploadCSV(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusConflict, gin.H{
-			"error": "Unable to upload CSV data in the database",
+			"error": "Unable to upload CSV data in the database.",
 		})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Data uploaded successfully",
+		"message": "Data uploaded successfully.",
 	})
 }

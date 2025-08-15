@@ -13,7 +13,7 @@ func Delete(context *gin.Context) {
 
 	if err := context.ShouldBindJSON(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
@@ -21,17 +21,17 @@ func Delete(context *gin.Context) {
 	result := configs.Database.Table("departments").Where("id = ?", input["id"]).Delete(&models.Department{})
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal server error occured",
+			"error": "Internal server error occured.",
 		})
 		return
 	} else if result.RowsAffected == 0 {
 		context.JSON(http.StatusNotFound, gin.H{
-			"error": "Department details not found",
+			"error": "No department exists with this ID.",
 		})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Department details are deleted successfully ...",
+		"message": "Department details are deleted successfully.",
 	})
 }

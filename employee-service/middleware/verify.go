@@ -24,7 +24,7 @@ func Verify() gin.HandlerFunc {
 		connection, err := grpc.NewClient(grpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to connect with the gRPC server",
+				"error": "Unable to connect with the gRPC server.",
 			})
 			return
 		}
@@ -40,17 +40,17 @@ func Verify() gin.HandlerFunc {
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to verify the token",
+				"error": "Unable to verify the token.",
 			})
 			return
 		} else if !response.Response {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "You are unauthorized and unable to proceed with the request",
+				"error": "You are unauthorized and unable to proceed with the request.",
 			})
 			return
 		}
 
-		log.Println("You are authorized and proceeding with the request ...")
+		log.Println("You are authorized and proceeding with the request.")
 		c.Next()
 	}
 }

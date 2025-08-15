@@ -14,7 +14,7 @@ func Add(context *gin.Context) {
 	var data models.Employee
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unable to fetch the input data",
+			"error": "Unable to fetch the input data.",
 		})
 		return
 	}
@@ -31,17 +31,17 @@ func Add(context *gin.Context) {
 				return
 			case 1062:
 				context.JSON(http.StatusBadRequest, gin.H{
-					"error": "Already an employee exists with same ID",
+					"error": "Already an employee exists with same details.",
 				})
 				return
 			case 1048:
 				context.JSON(http.StatusConflict, gin.H{
-					"error": "Data must not be null",
+					"error": "Data must not be null.",
 				})
 				return
 			case 3819:
 				context.JSON(http.StatusConflict, gin.H{
-					"error": "Data is violating the check constraints in the database",
+					"error": "Data is violating the check constraints in the database.",
 				})
 				return
 			default:

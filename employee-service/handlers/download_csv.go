@@ -16,7 +16,7 @@ func DownloadCSV(context *gin.Context) {
 	result := configs.Database.Table("employees").Find(&records)
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to fetch employee data",
+			"error": "Unable to fetch employee data.",
 		})
 		return
 	}
@@ -36,7 +36,7 @@ func DownloadCSV(context *gin.Context) {
 		"Gender", "Department ID", "Designation", "Salary", "Hire Date",
 	}); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to write CSV header",
+			"error": "Unable to write CSV header.",
 		})
 		return
 	}
@@ -56,7 +56,7 @@ func DownloadCSV(context *gin.Context) {
 			record.HireDate,
 		}); err != nil {
 			context.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to write CSV data",
+				"error": "Unable to write CSV data.",
 			})
 			return
 		}
