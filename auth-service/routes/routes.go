@@ -12,5 +12,7 @@ func SetupRoutes(router *gin.Engine) {
 		routes.GET("/login", handlers.Login)
 		routes.POST("/register", handlers.Register)
 		routes.GET("/recover", handlers.Recovery)
+		routes.DELETE("/delete", handlers.Delete)
+		routes.GET("/accounts", handlers.Read)
 	}
 }
