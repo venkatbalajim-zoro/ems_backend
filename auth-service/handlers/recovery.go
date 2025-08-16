@@ -3,7 +3,10 @@ package handlers
 import (
 	"auth-service/configs"
 	"auth-service/models"
+	"auth-service/utils"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,10 +30,26 @@ func Recovery(context *gin.Context) {
 		return
 	}
 
+	var data struct{ Email string }
+	err := configs.Database.Table("employees").Select("email").Where("employee_id = ?", account.EmployeeID).First(&data).Error
+	if err != nil {
+		log.Printf("Error in fetching the email from database: %s\n", err)
+	} else {
+		err = utils.SendEmail(models.Email{
+			ToEmails:   []string{data.Email},
+			Username:   account.Username,
+			Password:   account.Password,
+			EmployeeID: account.EmployeeID,
+			Action:     "recovered",
+			DateTime:   time.Now(),
+		})
+
+		if err != nil {
+			log.Printf("Error in sending the email: %s\n", err)
+		}
+	}
+
 	context.JSON(http.StatusOK, gin.H{
-		"message":  "Password fetched successfully.",
-		"password": account.Password,
+		"message": "Password fetched successfully. Please check the email.",
 	})
 }
-
-// this feature will be improved like sending the password through email.

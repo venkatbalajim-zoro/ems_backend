@@ -3,8 +3,11 @@ package handlers
 import (
 	"auth-service/configs"
 	"auth-service/models"
+	"auth-service/utils"
 	"errors"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
@@ -26,7 +29,7 @@ func Register(context *gin.Context) {
 		return
 	}
 
-	err := configs.Database.Create(&input).Error
+	err := configs.Database.Table("accounts").Create(&input).Error
 	if err != nil {
 		var mysqlErr *mysql.MySQLError
 		if errors.As(err, &mysqlErr) {
@@ -47,6 +50,25 @@ func Register(context *gin.Context) {
 				})
 			}
 			return
+		}
+	}
+
+	var data struct{ Email string }
+	err = configs.Database.Table("employees").Select("email").Where("employee_id = ?", input.EmployeeID).First(&data).Error
+	if err != nil {
+		log.Printf("Error in fetching the email from database: %s\n", err)
+	} else {
+		err = utils.SendEmail(models.Email{
+			ToEmails:   []string{data.Email},
+			Username:   input.Username,
+			Password:   input.Password,
+			EmployeeID: input.EmployeeID,
+			Action:     "created",
+			DateTime:   time.Now(),
+		})
+
+		if err != nil {
+			log.Printf("Error in sending the email: %s\n", err)
 		}
 	}
 
