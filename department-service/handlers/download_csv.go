@@ -42,4 +42,8 @@ func DownloadCSV(context *gin.Context) {
 			return
 		}
 	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"message": "Departments data is downloaded successfully.",
+	})
 }

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -40,8 +41,9 @@ func Verify() gin.HandlerFunc {
 		})
 
 		if err != nil {
+			errMessage := fmt.Sprintf("Unable to verify the token - %s", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to verify the token.",
+				"error": errMessage,
 			})
 			return
 		} else if !response.Response {

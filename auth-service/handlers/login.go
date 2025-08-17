@@ -3,6 +3,7 @@ package handlers
 import (
 	"auth-service/configs"
 	"auth-service/models"
+	"auth-service/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,7 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	token, err := configs.GenerateToken(account.Username, account.EmployeeID)
+	token, err := utils.GenerateToken(account.Username, account.EmployeeID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Unable to create the token for the authorization.",

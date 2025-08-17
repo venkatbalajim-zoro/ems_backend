@@ -20,7 +20,7 @@ func Read(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "All employees details are fetched successfully.",
+		"message": "All department details are fetched successfully.",
 		"data":    rows,
 	})
 }

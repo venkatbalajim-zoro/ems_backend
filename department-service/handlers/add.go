@@ -36,7 +36,7 @@ func Add(context *gin.Context) {
 		if errors.As(err, &sqlError) {
 			switch sqlError.Number {
 			case 1062:
-				context.JSON(http.StatusBadRequest, gin.H{
+				context.JSON(http.StatusConflict, gin.H{
 					"error": "Already a department exists with same ID.",
 				})
 				return

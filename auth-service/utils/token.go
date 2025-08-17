@@ -1,12 +1,13 @@
-package configs
+package utils
 
 import (
+	"auth-service/configs"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
-var secret = GetEnv("JWT_SECRET", "sample")
+var secret = configs.GetEnv("JWT_SECRET", "sample")
 
 func GenerateToken(username string, id int) (string, error) {
 	claims := jwt.MapClaims{

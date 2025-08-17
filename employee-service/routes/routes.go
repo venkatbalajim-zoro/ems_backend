@@ -12,7 +12,7 @@ func SetupRoutes(router *gin.Engine) {
 	{
 		routes.GET("/read", middleware.Verify(), handlers.Read)
 		routes.POST("/add", middleware.Verify(), handlers.Add)
-		routes.POST("/upload-csv", middleware.Verify(), handlers.UploadCSV)
+		routes.PUT("/upload-csv", middleware.Verify(), handlers.UploadCSV)
 		routes.GET("/download-csv", middleware.Verify(), handlers.DownloadCSV)
 		routes.PUT("/update", middleware.Verify(), handlers.Update)
 		routes.DELETE("/delete", middleware.Verify(), handlers.Delete)
