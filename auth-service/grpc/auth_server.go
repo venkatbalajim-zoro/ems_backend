@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"auth-service/middleware"
 	pb "auth-service/protos"
+	"auth-service/utils"
 )
 
 type AuthServer struct {
@@ -14,9 +14,14 @@ type AuthServer struct {
 func (server *AuthServer) VerifyToken(ctx context.Context, request *pb.VerifyTokenRequest) (*pb.VerifyTokenResponse, error) {
 	token := request.GetText()
 
-	status := middleware.Verify(token)
+	username, employee_id, err := utils.Verify(token)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.VerifyTokenResponse{
-		Response: status,
+		Username:   username,
+		EmployeeId: int64(employee_id),
 	}, nil
 }

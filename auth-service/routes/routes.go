@@ -2,6 +2,7 @@ package routes
 
 import (
 	"auth-service/handlers"
+	"auth-service/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,10 +10,12 @@ import (
 func SetupRoutes(router *gin.Engine) {
 	routes := router.Group("/auth")
 	{
-		routes.GET("/login", handlers.Login)
-		routes.POST("/register", handlers.Register)
-		routes.GET("/recover", handlers.Recovery)
-		routes.DELETE("/delete", handlers.Delete)
-		routes.GET("/accounts", handlers.Read)
+		routes.POST("/login", handlers.Login)
+		routes.POST("/recover", handlers.Recovery)
+		routes.GET("/check", middleware.Check(), handlers.Ping)
+		routes.POST("/register", middleware.Check(), handlers.Register)
+		routes.DELETE("/remove", middleware.Check(), handlers.Remove)
+		routes.GET("/accounts", middleware.Check(), handlers.Read)
+		routes.DELETE("/delete", middleware.Check(), handlers.Delete)
 	}
 }

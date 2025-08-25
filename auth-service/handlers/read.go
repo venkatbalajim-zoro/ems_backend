@@ -9,6 +9,8 @@ import (
 )
 
 func Read(context *gin.Context) {
+	username, _ := context.Get("username")
+
 	var accounts []models.Account
 
 	err := configs.Database.Table("accounts").Find(&accounts).Error
@@ -22,6 +24,7 @@ func Read(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Accounts data is fetched successfully.",
+		"username": username,
 		"data":    accounts,
 	})
 }

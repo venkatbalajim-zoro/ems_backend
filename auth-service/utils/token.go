@@ -7,9 +7,9 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var secret = configs.GetEnv("JWT_SECRET", "sample")
-
 func GenerateToken(username string, id int) (string, error) {
+	var secret = configs.GetEnv("JWT_SECRET", "sample")
+	
 	claims := jwt.MapClaims{
 		"username":    username,
 		"employee_id": id,

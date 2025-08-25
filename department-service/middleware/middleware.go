@@ -1,14 +1,16 @@
 package middleware
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	context "context"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -16,7 +18,7 @@ import (
 	pb "department-service/protos"
 )
 
-func Verify() gin.HandlerFunc {
+func Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		text := c.GetHeader("Authorization")
 
@@ -24,7 +26,6 @@ func Verify() gin.HandlerFunc {
 
 		connection, err := grpc.NewClient(grpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
-			log.Printf("Error in connecting gRPC: %s\n", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"error": "Unable to connect with the gRPC server.",
 			})
@@ -41,19 +42,27 @@ func Verify() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			errMessage := fmt.Sprintf("Unable to verify the token - %s", err)
+			msg := err.Error()
+			parts := strings.Split(msg, "desc =")
+			if len(parts) > 1 {
+				msg = strings.TrimSpace(parts[1])
+				msg = cases.Title(language.Tag{}).String(msg)
+			}
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": errMessage,
+				"error": msg,
 			})
 			return
-		} else if !response.Response {
+		} else if response.Username == "" || response.EmployeeId == 0 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "You are unauthorized and unable to proceed with the request.",
 			})
 			return
 		}
 
-		log.Println("You are authorized and proceeding with the request ...")
+		c.Set("username", response.Username)
+		c.Set("employee_id", response.EmployeeId)
+
+		log.Println("You are authorized and proceeding with the request.")
 		c.Next()
 	}
 }

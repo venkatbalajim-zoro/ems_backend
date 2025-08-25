@@ -16,6 +16,8 @@ import (
 func Register(context *gin.Context) {
 	var input models.Account
 	if err := context.ShouldBindJSON(&input); err != nil {
+		log.Println(err)
+
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": "Unable to fetch the input data.",
 		})
@@ -72,7 +74,7 @@ func Register(context *gin.Context) {
 		}
 	}
 
-	context.JSON(http.StatusOK, gin.H{
+	context.JSON(http.StatusCreated, gin.H{
 		"message": "Account registered successfully.",
 	})
 }
