@@ -1,43 +1,34 @@
-# Employee Management System
+# Employee Management System (Backend)
 
 ## Overview
 
-This is a backend project built to learn the Go programming language. It manages employees and departments using a simple microservices setup.
+This project is the backend application of an Employee Management System built using Go. It manages employees and departments using a microservices architecture.   
 
 
 ## Key Features
 
-- **Microservices Architecture** – Each service handles a specific part of the system.
-- **Gin Framework** – Fast and easy routing and logging.
-- **MySQL** – Used as the main database.
-- **GORM** – ORM library for easy database interaction.
-- **JWT Authentication** – Secures routes with token-based login.
-- **CRUD Operations** – Create, read, update, and delete employees and departments.
-- **Middleware** - JWT auth token verification. 
-- **gRPC Communication** - Intercommunication between services for token verification. 
-
-
-## Future Plans
-
-- Reading CSV file for adding and updating multiple records of data. 
-- Use Go concurrency to improve performance.
-- Advanced logging for debugging and monitoring API requests. 
-- Testing and benchmarking in all modules. 
-- Build a simple frontend UI for users.
+- **Microservices Architecture** – Each service handles a specific functionality of the system.  
+- **Gin Framework** – Fast and intuitive routing with built-in logging.  
+- **MySQL** – Main relational database for persistent data storage.  
+- **GORM** – Go ORM library for easy database interactions.  
+- **JWT Authentication** – Secure API endpoints with token-based authentication.  
+- **CRUD Operations** – Full support for creating, reading, updating, and deleting employees and departments.  
+- **Middleware** – JWT token verification for route protection.  
+- **gRPC Communication** – Services interact securely for token verification.  
+- **CSV File Handling** – Upload and download CSV files for batch data operations.  
+- **Table-Driven Testing** – Comprehensive tests with multiple scenarios to ensure reliability.
 
 
 ## Project Goals
 
-This project is designed to:
+This project aims to:  
+- Practice Go programming for backend development.  
+- Understand and implement microservices architecture.  
+- Build secure and scalable APIs.  
 
-- Help me practice Go for backend development.
-- Understand how microservices work.
-- Learn how to build secure and scalable APIs.
 
+## Getting Started
 
-## Note
-
-- This project is still in development. <br>
-- Contributions or suggestions are welcome! <br>
-- Please contact me via m.venkatbalaji@moneyforward.co.jp <br>
-- Thank you for visiting my repository :)
+- Contributions and suggestions are welcome!  
+- For questions or collaboration, please contact me at: m.venkatbalaji@moneyforward.co.jp  
+- Thank you for visiting my repository!
