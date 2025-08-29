@@ -1,3 +1,0 @@
-
-Need to change before deployment:
-    - TLS enable in database link 
