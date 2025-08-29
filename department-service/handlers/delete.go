@@ -18,7 +18,16 @@ func Delete(context *gin.Context) {
 		return
 	}
 
-	result := configs.Database.Table("departments").Where("id = ?", input["id"]).Delete(&models.Department{})
+	var data map[string]any
+	result := configs.Database.Table("employees").Where("department_id = ?", input["id"]).Find(&data)
+	if result.RowsAffected > 0 {
+		context.JSON(http.StatusConflict, gin.H{
+			"error": "Unable to delete as there are employees working in this department.",
+		})
+		return 
+	}
+
+	result = configs.Database.Table("departments").Where("id = ?", input["id"]).Delete(&models.Department{})
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Internal server error occured.",

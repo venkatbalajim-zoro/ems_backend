@@ -16,5 +16,6 @@ func SetupRoutes(router *gin.Engine) {
 		routes.GET("/download-csv", middleware.Check(), handlers.DownloadCSV)
 		routes.PUT("/update", middleware.Check(), handlers.Update)
 		routes.DELETE("/delete", middleware.Check(), handlers.Delete)
+		routes.GET("/download-template", middleware.Check(), handlers.DownloadTemplate)
 	}
 }
