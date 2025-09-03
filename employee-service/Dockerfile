@@ -1,17 +1,26 @@
-FROM golang:1.24.5-alpine 
+# Build stage
+FROM golang:1.24.5-alpine AS builder
 
-WORKDIR /app 
+WORKDIR /app
 
+# Preload dependencies
 COPY go.mod go.sum ./
+RUN apk add --no-cache git
+RUN go mod download
 
-RUN apk add --no-cache git 
-
-RUN go mod download 
-
+# Copy source and build
 COPY . .
+RUN go build -o app .
 
-RUN go build -o app 
+# Final stage
+FROM alpine:latest
+WORKDIR /app
 
-EXPOSE 8081
+# Copy only the binary from builder
+COPY --from=builder /app/app .
 
-CMD [ "./app" ]
+# Expose the port Vercel expects
+EXPOSE 3000
+
+# Run the service
+CMD ["./app"]

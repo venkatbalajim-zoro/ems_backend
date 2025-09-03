@@ -51,5 +51,5 @@ func main() {
 		log.Println("Listening and serving gRPC on :50051")
 	}()
 
-	ginServer.Run(configs.GetEnv("ADDRESS", ":8080"))
+	ginServer.Run(configs.GetEnv("ADDRESS", ":3000"))
 }

@@ -28,5 +28,5 @@ func main() {
 
 	routes.SetupRoutes(engine)
 
-	engine.Run(configs.GetEnv("ADDRESS", ":8080"))
+	engine.Run(configs.GetEnv("ADDRESS", ":3000"))
 }
