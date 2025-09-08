@@ -8,7 +8,7 @@ type Employee struct {
 	Phone          string  `json:"phone" gorm:"type:varchar(10);unique;not null"`
 	Gender         string  `json:"gender" gorm:"type:enum('Male','Female','Others');not null"`
 	DepartmentID   int     `json:"department_id"`
-	DepartmentName string  `json:"department_name"`
+	DepartmentName string  `json:"department_name" gorm:"-"`
 	Designation    string  `json:"designation" gorm:"type:varchar(100);not null;default:'New Joinee'"`
 	Salary         float64 `json:"salary" gorm:"type:decimal(10,2);not null;default:40000.00"`
 	HireDate       string  `json:"hire_date" gorm:"type:varchar(100)"`
