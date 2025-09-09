@@ -9,6 +9,7 @@ import (
 )
 
 func Read(context *gin.Context) {
+	id, _ := context.Get("employee_id")
 	var rows []models.Employee
 
 	err := configs.Database.Table("employees").Find(&rows).Error
@@ -36,5 +37,6 @@ func Read(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"message": "All employees details are fetched successfully.",
 		"data":    rows,
+		"employee_id": id,
 	})
 }
